@@ -154,6 +154,7 @@ public class DomainServiceImpl implements DomainService {
                     }
                 })
                 .flatMap(this::createSystemScopes)
+                .flatMap(this::createDefaultCertificate)
                 .onErrorResumeNext(ex -> {
                     if (ex instanceof AbstractManagementException) {
                         return Single.error(ex);
@@ -404,6 +405,12 @@ public class DomainServiceImpl implements DomainService {
                 })
                 .lastOrError()
                 .map(scope -> domain);
+    }
+
+    private Single<Domain> createDefaultCertificate(Domain domain) {
+        return certificateService
+                .create(domain.getId())
+                .map(certificate -> domain);
     }
 
     private String generateContextPath(String domainName) {
