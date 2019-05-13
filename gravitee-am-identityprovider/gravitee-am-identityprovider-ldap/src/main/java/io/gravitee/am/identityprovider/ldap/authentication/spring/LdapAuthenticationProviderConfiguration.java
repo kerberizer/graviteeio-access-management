@@ -94,6 +94,10 @@ public class LdapAuthenticationProviderConfiguration {
         dnResolver.setBaseDn(configuration.getContextSourceBase());
         dnResolver.setUserFilter(configuration.getUserSearchFilter());
         dnResolver.setSubtreeSearch(true);
+        String userSearchBase = configuration.getUserSearchBase();
+        if (userSearchBase != null && !userSearchBase.isEmpty()) {
+            dnResolver.setBaseDn(userSearchBase + LDAP_SEPARATOR + dnResolver.getBaseDn());
+        }
 
         AbstractAuthenticationHandler authHandler =
                 (configuration.getPasswordAlgorithm() == null)
